@@ -4,3 +4,5 @@
 **/terraform*
 **/*.tfvars
 **/envs
+
+**/__pycache__
