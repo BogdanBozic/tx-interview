@@ -6,7 +6,7 @@ resource "github_repository" "app_repo" {
 resource "github_repository_file" "readme" {
   repository     = github_repository.app_repo.name
   file           = "README.md"
-  content        = file("${path.module}/../../../../README.md")
+  content        = file("${path.module}/../../../../application/README.md")
   commit_message = "Upload README file"
   overwrite_on_create = true
 }
