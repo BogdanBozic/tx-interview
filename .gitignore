@@ -4,5 +4,6 @@
 **/terraform*
 **/*.tfvars
 **/envs
+**/goldbach
 
 **/__pycache__
