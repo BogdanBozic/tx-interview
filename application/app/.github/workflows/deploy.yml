@@ -35,13 +35,20 @@ jobs:
         with:
           dockerfile: Dockerfile
 
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Test artifacts
+        run: touch testing.txt
+
+      - name: Test ls
+        run: ls
 #      - name: Semantic Release
 #        uses: docker://semanticrelease/semantic-release:latest
 #        with:
