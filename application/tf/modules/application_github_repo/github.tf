@@ -26,3 +26,11 @@ resource "github_repository_file" "requirements-txt" {
   commit_message = "Upload Python requirements file"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "unit_test" {
+  repository     = github_repository.app_repo.name
+  file           = "app/test_main.py"
+  content        = file("${path.module}/../../../../application/app/test_main.py")
+  commit_message = "Upload unit tests"
+  overwrite_on_create = true
+}
