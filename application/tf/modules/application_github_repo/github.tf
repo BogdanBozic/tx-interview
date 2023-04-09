@@ -5,26 +5,38 @@ resource "github_repository" "app_repo" {
 }
 
 ### Workflows Setup ###
-resource "github_repository_environment" "repo_environment" {
+
+resource "github_actions_secret" "github_repo_name" {
   repository       = github_repository.app_repo.name
-  environment      = "default"
+  secret_name      = "REPO_NAME_GITHUB"
+  plaintext_value  = github_repository.app_repo.name
 }
 
-resource "github_actions_environment_secret" "github_token" {
+resource "github_actions_secret" "github_token" {
   repository       = github_repository.app_repo.name
-  environment      = github_repository_environment.repo_environment.environment
   secret_name      = "DEPLOYMENT_TOKEN"
   plaintext_value  = var.github_token
 }
 
-### End Workflows Setup ###
+resource "github_actions_secret" "docker_hub_username" {
+  repository  = github_repository.app_repo.name
+  secret_name = "DOCKER_HUB_USERNAME"
+  plaintext_value  = var.docker_hub_username
+}
 
-#resource "github_repository_deploy_key" "deploy_ssh_key" {
-#  title      = "Repository SSH deploy key"
-#  repository = github_repository.app_repo.name
-#  key        = local.ssh_key_public
-#  read_only  = "false"
-#}
+resource "github_actions_secret" "docker_hub_password" {
+  repository  = github_repository.app_repo.name
+  secret_name = "DOCKER_HUB_PASSWORD"
+  plaintext_value  = var.docker_hub_password
+}
+
+resource "github_actions_secret" "github_repository_name" {
+  repository  = github_repository.app_repo.name
+  secret_name = "REPOSITORY_NAME_GITHUB"
+  plaintext_value  = github_repository.app_repo.name
+}
+
+### End Workflows Setup ###
 
 ### Github Files ###
 resource "github_repository_file" "readme" {

@@ -41,46 +41,20 @@ jobs:
       - test
     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v3
+     -  name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
 
-      - name: Test artifacts
-        run: touch testing.txt
+     -  name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Test ls
-        run: ls
-#      - name: Semantic Release
-#        uses: docker://semanticrelease/semantic-release:latest
-#        with:
-#          entrypoint: /bin/sh
-#          args: |
-#            npm install --save-dev @semantic-release/git @semantic-release/changelog
-#            npx semantic-release --publish --no-ci
-#            echo -n "$(git describe --tags | tr -d "\n") > version.txt
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          DOCKER_HUB_USERNAME: ${docker_hub_username}
-#          GH_REPOSITORY_NAME: ${github_repository_name}
-#
-#      - name: Login to Docker Hub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v2
-#        with:
-#          context: .
-#          push: true
-#          tags: |
-#            ${docker_hub_username}/${docker_image_name}:${{ github.ref }}
-#            ${docker_hub_username}/${docker_image_name}}:latest
-#
-#      - name: Update README.md with Docker image tag
-#        run: |
-#          sed -i "s/<DOCKER_IMAGE_TAG>/${{ github.ref }}/g" README.md
-#
-#      - name: Commit and push changes
-#        run: |
-#          git config --global user.email "terraform@example.com"
+     -  name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+     -  name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.REPO_NAME_GITHUB }}:${{ github.sha }}
