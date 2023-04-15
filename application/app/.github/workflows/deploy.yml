@@ -27,9 +27,6 @@ jobs:
       - name: Run unit tests
         run: pytest &
 
-      - name: Debug
-        run: pwd & ls
-
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v3.1.0
         with:
@@ -57,4 +54,43 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.REPO_NAME_GITHUB }}:${{ github.sha:0:7 }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.REPO_NAME_GITHUB }}:${{ github.sha }}
+
+      - name: Store tag into file
+        run: |
+          echo ${{ github.sha }} > tag.txt
+          cat tag.txt
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: tag.txt
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: distfiles
+
+      - name: copy file to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          source: distfiles/*
+          target: /home/ec2-user/k8s_resources
+
+      - name: Update deployment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: "ec2-user"
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: "22"
+          script: |
+            export PATH=$PATH:/home/ec2-user/bin:/home/ec2-user/.local/bin
+            cd /home/ec2-user/k8s_resources
+            export TAG=$(cat distfiles/tag.txt | tr -d '\n')
+            yq -i ".spec.template.spec.containers[0].image=\"bogdanbozic/bogdan_goldbach_app_repo:$TAG\"" goldbach-app-deployment.yaml
+            kubectl apply -f goldbach-app-deployment.yaml

@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goldbach
+  labels:
+    app: goldbach
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: goldbach
+  template:
+    metadata:
+      labels:
+        app: goldbach
+    spec:
+      containers:
+        - name: goldbach
+          image: bogdanbozic/bogdan_goldbach_app_repo:99760d091d4c1efd0ab71e0a29eb7b24947bcf0e
+          ports:
+            - containerPort: 11000
