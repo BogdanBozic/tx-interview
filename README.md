@@ -108,6 +108,7 @@ The whole startup flow looks like this:
 * The server is using a default Amazon Linux 2 AMI, meaning that if something goes wrong, we would have to install everything from the scratch and build the files anew. A custom image with the tools pre-built could have been used with some persistent storage within the Kubernetes cluster itself.
 3. The remote state file is held locally. I didn't want to have it stored anywhere else as it is only an assignment project, but this approach should never be used anywhere.
 4. I didn't use any external secret managers.
+5. The infrastructure is not as templetisized (I'm pretty sure that's not a real word), meaning that if we were to add more applications to it we would need to manually adjust the infrastructure to support it.
 
 ## My experience using ChatGPT
 
