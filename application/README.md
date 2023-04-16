@@ -14,4 +14,4 @@ The app uses GitHub Actions for its CI. The CI consists of the following steps:
 2. Run Python unittests
 3. Run Hadolint against the Dockerfile
 4. Build and publish the image to Docker Hub
-5. Publish the version change to the infrastructure repo
+5. Publish the version change to the provisioner server

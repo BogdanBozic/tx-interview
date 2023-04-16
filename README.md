@@ -100,6 +100,7 @@ The whole startup flow looks like this:
 1. As mentioned above, worker node group communicates through public internet with the cluster. Can be solved with a VPC Endpoint.
 2. The "jump server". It is meant to serve only as a simulation of the GitOps approach. So:
 * We should never SSH from any CI into anywhere but use webhooks instead.
+* Could have changed the port from 22 to something else. Not really a security feature, but I guess it would prevent at least some attempts to ssh through 22.
 * Using webhooks would require a service that would be listening for them and acting accordingly, so that's missing as well.
 * Tools like ArgoCD could have been used for maintaining the apps.
 * An additional Github repo for the infrastructure containing app versions with Helm charts could have been used to further automate and make the platform more resilient.
@@ -123,4 +124,4 @@ When it comes to the information that I was able to get out of it, there are a f
 5. Same stands for when asking for code snippets. It will not be able to write some complex code at first (or at all), but you can help it by gradually increasing the complexity starting from simple questions.
 6. It doesn't work well with writing declarative code. When providing samples for Terraform resources or Kubernetes manifests, it will often mix things that cannot go together or have been deprecated quite some time ago.
 7. What it does brilliantly is writing and validating linear lines of code like in Bash. It really excels there.
-8. A thing that amazed me is that I asked it to run Hadolint against my Dockerfile - and it did. The output wasn't really as the one I had gotten, but it did give me some results.
+8. A thing that amazed me is that I asked it to run Hadolint against my Dockerfile - and it did. The output wasn't really as the one I had gotten, but it did give me some valid results.
