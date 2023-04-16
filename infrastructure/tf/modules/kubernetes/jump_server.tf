@@ -20,7 +20,27 @@ resource "aws_instance" "jump_server" {
   iam_instance_profile        = aws_iam_instance_profile.jump_server.name
   associate_public_ip_address = true
 
-  depends_on = [aws_eks_cluster.goldbach, aws_eks_node_group.goldbach]
+  depends_on = [aws_eks_cluster.goldbach,
+    aws_eks_node_group.goldbach,
+    aws_vpc.goldbach,
+    aws_security_group.goldbach_master,
+    aws_route_table.goldbach,
+    aws_vpc_security_group_ingress_rule.goldbach_master_kubectl,
+    aws_nat_gateway.goldbach,
+    aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.worker_cert_manager,
+    aws_iam_role_policy_attachment.cert_manager,
+    aws_vpc_security_group_ingress_rule.jump_server_ssh,
+   aws_iam_policy.cert_manager,
+    aws_vpc_security_group_egress_rule.jump_server_outbound,
+    aws_route_table_association.goldbach_worker,
+    aws_route_table_association.jump_server,
+    aws_vpc_security_group_egress_rule.eks_cluster_outbound,
+    aws_vpc_security_group_egress_rule.goldbach_worker_outbound_all,
+    aws_iam_role.cert_manager_role,
+    aws_iam_policy.policy_for_cert_manager,
+    aws_route_table.goldbach_worker
+  ]
 
   connection {
     type        = "ssh"
@@ -40,7 +60,7 @@ resource "aws_instance" "jump_server" {
       "helm delete nginx-ingress",
       "cd /home/ec2-user/",
       "cat dns_record.json | jq '.Changes[].Action = \"DELETE\"' > updated.json && mv updated.json dns_record.json",
-      "aws route53 change-resource-record-sets --hosted-zone-id ${data.aws_route53_zone.bastovansurcinski.id} --change-batch \"$(cat ./dns_record.json)\"",
+      "aws route53 change-resource-record-sets --hosted-zone-id Z1031823IF2XGN2I3WHM --change-batch \"$(cat ./dns_record.json)\"",
     ]
   }
 
