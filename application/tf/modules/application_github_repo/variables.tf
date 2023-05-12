@@ -3,25 +3,55 @@ variable "github_token" {
   type        = string
 }
 
-variable "docker_hub_username" {
-  description = "Docker Hub username"
-  type        = string
+variable "application_name" {
+  type = string
+  description = "Name your application, please."
 }
 
-variable "docker_hub_password" {
-  description = "Docker Hub password"
-  type        = string
+variable "ecr_name" {
+  type = string
+  description = "ECR name where the app image will be stored."
 }
 
-variable "remote_host" {
-  description = "Public IP of the jump server from the infrastructure module."
-  type        = string
+variable "aws_account_id" {
+  type = number
+  description = "AWS Account ID."
 }
 
-variable "ssh_private_key" {
-  description = "Private SSH key used for promoting app version."
-  type        = string
+variable "default_aws_region" {
+  type = string
+  description = "Default AWS region."
 }
+
+variable "ecr_user_access_key" {
+  type = string
+  description = "AWS ECR user access key. Used for uploading container images."
+}
+
+variable "ecr_user_secret_key" {
+  type = string
+  description = "AWS ECR user secret key. Used for uploading container images."
+}
+
+#variable "docker_hub_username" {
+#  description = "Docker Hub username"
+#  type        = string
+#}
+#
+#variable "docker_hub_password" {
+#  description = "Docker Hub password"
+#  type        = string
+#}
+
+#variable "remote_host" {
+#  description = "Public IP of the jump server from the infrastructure module."
+#  type        = string
+#}
+#
+#variable "ssh_private_key" {
+#  description = "Private SSH key used for promoting app version."
+#  type        = string
+#}
 
 variable "wait_signal" {
   description = "Doesn't actually do anything. Used only for creating Terraform dependency."

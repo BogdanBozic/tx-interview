@@ -168,3 +168,26 @@ resource "aws_iam_role_policy_attachment" "worker_cert_manager" {
 #})
 #}
 #
+
+### ECR ###
+
+resource "aws_iam_user" "github_image_upload" {
+  name = "${var.application_name}_github_image_upload"
+}
+
+resource "aws_iam_access_key" "ecr_user_access_key" {
+  user = aws_iam_user.github_image_upload.name
+}
+
+data "aws_iam_policy_document" "ecr_user_policy_document" {
+  statement = {
+    effect = "Allow"
+    action = "ecr:*"
+    resource = "arn:aws:ecr:${var.default_region}:${data.aws_caller_identity.current.account_id}:repository/${aws_ecr_repository.application_repo.name}"
+  }
+}
+
+resource "aws_iam_user_policy" "ecr_user_policy" {
+  policy = data.aws_iam_policy_document.ecr_user_policy_document.json
+  user   = aws_iam_user.github_image_upload.name
+}

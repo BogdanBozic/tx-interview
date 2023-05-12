@@ -18,16 +18,34 @@ resource "github_actions_secret" "github_token" {
   plaintext_value = var.github_token
 }
 
-resource "github_actions_secret" "docker_hub_username" {
+resource "github_actions_secret" "aws_account_id" {
   repository      = github_repository.app_repo.name
-  secret_name     = "DOCKER_HUB_USERNAME"
-  plaintext_value = var.docker_hub_username
+  secret_name     = "AWS_ACCOUNT_ID"
+  plaintext_value = var.aws_account_id
 }
 
-resource "github_actions_secret" "docker_hub_password" {
+resource "github_actions_secret" "aws_default_region" {
   repository      = github_repository.app_repo.name
-  secret_name     = "DOCKER_HUB_PASSWORD"
-  plaintext_value = var.docker_hub_password
+  secret_name     = "DEFAULT_AWS_REGION"
+  plaintext_value = var.default_aws_region
+}
+
+resource "github_actions_secret" "ecr_user_access_key" {
+  repository      = github_repository.app_repo.name
+  secret_name     = "ECR_USER_ACCESS_KEY"
+  plaintext_value = var.ecr_user_access_key
+}
+
+resource "github_actions_secret" "ecr_user_secret_key" {
+  repository      = github_repository.app_repo.name
+  secret_name     = "ECR_USER_SECRET_KEY"
+  plaintext_value = var.ecr_user_secret_key
+}
+
+resource "github_actions_secret" "ecr_name" {
+  repository      = github_repository.app_repo.name
+  secret_name     = "ECR_NAME"
+  plaintext_value = var.ecr_name
 }
 
 resource "github_actions_secret" "github_repository_name" {
@@ -36,21 +54,10 @@ resource "github_actions_secret" "github_repository_name" {
   plaintext_value = github_repository.app_repo.name
 }
 
-resource "github_actions_secret" "remote_host" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "REMOTE_HOST"
-  plaintext_value = var.remote_host
-}
-
-resource "github_actions_secret" "ssh_private_key" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "SSH_PRIVATE_KEY"
-  plaintext_value = var.ssh_private_key
-}
-
 ### End Workflows Setup ###
 
 ### Github Files ###
+
 resource "github_repository_file" "readme" {
   repository          = github_repository.app_repo.name
   file                = "README.md"

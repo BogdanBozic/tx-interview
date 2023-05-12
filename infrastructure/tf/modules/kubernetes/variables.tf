@@ -14,6 +14,11 @@ variable "default_region" {
   description = "Region for AWS. Default is us-east-1."
 }
 
+variable "application_name" {
+  type = string
+  description = "Name your application, please."
+}
+
 variable "cluster_name" {
   default = "goldbach"
   type = string
