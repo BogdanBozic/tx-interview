@@ -68,6 +68,6 @@ jobs:
               apt-get install git yq -Y
               mkdir infrastructure
               cd infrastructure
-              git clone https://$${ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.GITHUB_LOGIN }}/${{ secrets.APPLICATION_NAME }}.git .
+              git clone https://$${ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}.git .
 
 # TODO: once the infra repo is set up, add version bump code here

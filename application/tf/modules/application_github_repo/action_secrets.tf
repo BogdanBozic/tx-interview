@@ -46,9 +46,9 @@ resource "github_actions_secret" "github_repository_name" {
   plaintext_value = github_repository.app_repo.name
 }
 
-resource "github_actions_secret" "github_login" {
+resource "github_actions_secret" "login_github" {
   repository      = github_repository.app_repo.name
-  secret_name     = "GITHUB_LOGIN"
+  secret_name     = "LOGIN_GITHUB"
   plaintext_value = data.github_user.current.login
 }
 

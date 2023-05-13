@@ -137,10 +137,11 @@ resource "aws_iam_access_key" "ecr_user_access_key" {
 }
 
 data "aws_iam_policy_document" "ecr_user_policy_document" {
-  statement = {
-    effect   = "Allow"
-    action   = "ecr:*"
-    resource = "arn:aws:ecr:${var.default_region}:${data.aws_caller_identity.current.account_id}:repository/${aws_ecr_repository.application_repo.name}"
+  statement {
+    sid       = "AllowECRAccess"
+    effect    = "Allow"
+    actions   = ["ecr:*"]
+    resources = ["arn:aws:ecr:${var.default_region}:${data.aws_caller_identity.current.account_id}:repository/${aws_ecr_repository.application_repo.name}"]
   }
 }
 

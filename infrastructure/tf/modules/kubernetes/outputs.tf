@@ -1,11 +1,3 @@
-#output "kubeconfig" {
-#  value = local.kubeconfig
-#}
-#
-#output "config_map_aws_auth" {
-#  value = local.config_map_aws_auth
-#}
-
 output "aws_account_id" {
   value = data.aws_caller_identity.current.account_id
 }
