@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  AWS_REGION: ${{ secrets.DEFAULT_AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrets.ECR_NAME }}
+
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -38,29 +43,53 @@ jobs:
       - test
     steps:
 
-      - name: Build and push
-        uses: mr-smithers-excellent/docker-build-push@v6
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
-          image: ${{ secrets.ECR_NAME }}/${{
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.DEFAULT_AWS_REGION }}.amazonaws.com
+          aws-access-key-id: ${{ secrets.ECR_USER_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.ECR_USER_SECRET_KEY }}
+          aws-region: ${{ env.DEFAULT_AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ECR_USER_SECRET_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_USER_ACCESS_KEY }}
-
-      - name: Store tag into file
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          echo ${{ github.sha }} > tag.txt
-          cat tag.txt
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: tag.txt
+#      - name: Build and push
+#        uses: mr-smithers-excellent/docker-build-push@v6
+#        with:
+#          image: ${{ secrets.APPLICATION_NAME }}:${{ github.sha }}
+#          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.DEFAULT_AWS_REGION }}.amazonaws.com
+#        env:
+#          AWS_ACCESS_KEY_ID: ${{ secrets.ECR_USER_SECRET_KEY }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_USER_ACCESS_KEY }}
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: my-artifact
-          path: distfiles
+#      - name: Store tag into file
+#        run: |
+#          echo ${{ github.sha }} > tag.txt
+#          cat tag.txt
+#
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: my-artifact
+#          path: tag.txt
+#
+#      - uses: actions/download-artifact@v2
+#        with:
+#          name: my-artifact
+#          path: distfiles
 
       - name: Bump version
         run: |

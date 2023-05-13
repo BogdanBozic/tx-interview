@@ -143,6 +143,13 @@ data "aws_iam_policy_document" "ecr_user_policy_document" {
     actions   = ["ecr:*"]
     resources = ["arn:aws:ecr:${var.default_region}:${data.aws_caller_identity.current.account_id}:repository/${aws_ecr_repository.application_repo.name}"]
   }
+
+  statement {
+    sid = "AllowGetToken"
+    effect = "Allow"
+    actions = ["ecr:GetAuthorizationToken"]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_user_policy" "ecr_user_policy" {
