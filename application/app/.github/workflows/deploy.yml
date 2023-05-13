@@ -5,11 +5,6 @@ on:
     branches:
       - main
 
-env:
-  AWS_REGION: ${{ secrets.DEFAULT_AWS_REGION }}
-  ECR_REPOSITORY: ${{ secrets.ECR_NAME }}
-
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -43,12 +38,15 @@ jobs:
       - test
     steps:
 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
           aws-access-key-id: ${{ secrets.ECR_USER_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.ECR_USER_SECRET_KEY }}
-          aws-region: ${{ env.DEFAULT_AWS_REGION }}
+          aws-region: ${{ secrets.DEFAULT_AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -60,43 +58,17 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-#      - name: Build and push
-#        uses: mr-smithers-excellent/docker-build-push@v6
-#        with:
-#          image: ${{ secrets.APPLICATION_NAME }}:${{ github.sha }}
-#          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.DEFAULT_AWS_REGION }}.amazonaws.com
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.ECR_USER_SECRET_KEY }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_USER_ACCESS_KEY }}
-
-#      - name: Store tag into file
-#        run: |
-#          echo ${{ github.sha }} > tag.txt
-#          cat tag.txt
-#
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: my-artifact
-#          path: tag.txt
-#
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: my-artifact
-#          path: distfiles
+          docker build -t ${{ secrets.ECR_NAME }}:${{ github.sha }} .
+          docker push ${{ secrets.ECR_NAME }}:${{ github.sha }}
 
       - name: Bump version
         run: |
-              apt-get update
-              apt-get install git yq -Y
+              wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+              chmod a+x /usr/local/bin/yq
+              yq --version
               mkdir infrastructure
               cd infrastructure
-              git clone https://$${ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}.git .
+              echo yay
+#              git clone https://${{ secrets.DEPLOYMENT_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}-infra.git .
 
 # TODO: once the infra repo is set up, add version bump code here
