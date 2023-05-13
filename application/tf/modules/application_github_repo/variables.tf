@@ -4,32 +4,32 @@ variable "github_token" {
 }
 
 variable "application_name" {
-  type = string
+  type        = string
   description = "Name your application, please."
 }
 
 variable "ecr_name" {
-  type = string
+  type        = string
   description = "ECR name where the app image will be stored."
 }
 
 variable "aws_account_id" {
-  type = number
+  type        = number
   description = "AWS Account ID."
 }
 
 variable "default_aws_region" {
-  type = string
+  type        = string
   description = "Default AWS region."
 }
 
 variable "ecr_user_access_key" {
-  type = string
+  type        = string
   description = "AWS ECR user access key. Used for uploading container images."
 }
 
 variable "ecr_user_secret_key" {
-  type = string
+  type        = string
   description = "AWS ECR user secret key. Used for uploading container images."
 }
 

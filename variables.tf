@@ -9,7 +9,7 @@
 #}
 
 variable "application_name" {
-  type = string
+  type        = string
   description = "Name the application, please."
 }
 
@@ -29,7 +29,7 @@ variable "secret_key" {
 }
 
 variable "default_aws_region" {
-  type = string
+  type        = string
   description = "Default AWS region."
 }
 

@@ -90,10 +90,10 @@ resource "aws_iam_policy" "policy_for_cert_manager" {
         "Resource" : "arn:aws:route53:::hostedzone/${data.aws_route53_zone.bastovansurcinski.id}"
       },
       {
-            "Action": "sts:AssumeRole",
-            "Effect": "Allow",
-            "Resource": "*"
-        }
+        "Action" : "sts:AssumeRole",
+        "Effect" : "Allow",
+        "Resource" : "*"
+      }
     ]
   })
 }
@@ -138,8 +138,8 @@ resource "aws_iam_access_key" "ecr_user_access_key" {
 
 data "aws_iam_policy_document" "ecr_user_policy_document" {
   statement = {
-    effect = "Allow"
-    action = "ecr:*"
+    effect   = "Allow"
+    action   = "ecr:*"
     resource = "arn:aws:ecr:${var.default_region}:${data.aws_caller_identity.current.account_id}:repository/${aws_ecr_repository.application_repo.name}"
   }
 }

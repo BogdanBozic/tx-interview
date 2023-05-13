@@ -31,7 +31,7 @@ resource "aws_instance" "jump_server" {
     aws_iam_role_policy_attachment.worker_cert_manager,
     aws_iam_role_policy_attachment.cert_manager,
     aws_vpc_security_group_ingress_rule.jump_server_ssh,
-   aws_iam_policy.cert_manager,
+    aws_iam_policy.cert_manager,
     aws_vpc_security_group_egress_rule.jump_server_outbound,
     aws_route_table_association.goldbach_worker,
     aws_route_table_association.jump_server,
