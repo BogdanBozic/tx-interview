@@ -1,13 +1,21 @@
-#output "kubeconfig" {
-#  value = local.kubeconfig
-#}
-#
-#output "config_map_aws_auth" {
-#  value = local.config_map_aws_auth
-#}
+output "aws_account_id" {
+  value = data.aws_caller_identity.current.account_id
+}
 
 output "jump_server_ip" {
   value = aws_instance.jump_server.public_ip
+}
+
+output "ecr_name" {
+  value = aws_ecr_repository.application_repo.name
+}
+
+output "ecr_user_access_key" {
+  value = aws_iam_access_key.ecr_user_access_key.id
+}
+
+output "ecr_user_secret_key" {
+  value = aws_iam_access_key.ecr_user_access_key.secret
 }
 
 output "wait_signal" {

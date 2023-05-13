@@ -1,56 +1,3 @@
-resource "github_repository" "app_repo" {
-  name        = "bogdan_goldbach_app_repo"
-  description = "The application repository of the GolBach Interview Assignment. This sentence is only waiting for ${var.wait_signal}, don't mind it."
-  visibility  = "public"
-}
-
-### Workflows Setup ###
-
-resource "github_actions_secret" "github_repo_name" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "REPO_NAME_GITHUB"
-  plaintext_value = github_repository.app_repo.name
-}
-
-resource "github_actions_secret" "github_token" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "DEPLOYMENT_TOKEN"
-  plaintext_value = var.github_token
-}
-
-resource "github_actions_secret" "docker_hub_username" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "DOCKER_HUB_USERNAME"
-  plaintext_value = var.docker_hub_username
-}
-
-resource "github_actions_secret" "docker_hub_password" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "DOCKER_HUB_PASSWORD"
-  plaintext_value = var.docker_hub_password
-}
-
-resource "github_actions_secret" "github_repository_name" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "REPOSITORY_NAME_GITHUB"
-  plaintext_value = github_repository.app_repo.name
-}
-
-resource "github_actions_secret" "remote_host" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "REMOTE_HOST"
-  plaintext_value = var.remote_host
-}
-
-resource "github_actions_secret" "ssh_private_key" {
-  repository      = github_repository.app_repo.name
-  secret_name     = "SSH_PRIVATE_KEY"
-  plaintext_value = var.ssh_private_key
-}
-
-### End Workflows Setup ###
-
-### Github Files ###
 resource "github_repository_file" "readme" {
   repository          = github_repository.app_repo.name
   file                = "README.md"
@@ -98,5 +45,3 @@ resource "github_repository_file" "dockerfile" {
   overwrite_on_create = true
   commit_message      = "Upload Dockerfile"
 }
-
-### End Github Files ###
