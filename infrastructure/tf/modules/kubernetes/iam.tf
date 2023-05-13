@@ -124,50 +124,7 @@ resource "aws_iam_role_policy_attachment" "worker_cert_manager" {
   role       = aws_iam_role.goldbach-worker.name
 }
 
-#
-#resource "aws_iam_role" "cert_manager" {
-#  name = "cert_manager"
-#
-#  assume_role_policy = jsonencode({
-#    Version = "2012-10-17"
-#    Statement = [
-#      {
-#        Action = "sts:AssumeRole"
-#        Effect = "Allow"
-#        Principal = {
-#          Service = "ec2.amazonaws.com"
-#        }
-#      }
-#    ]
-#  })
-#}
-#
-#resource "aws_iam_policy" "goldbach_cert_manager_route53" {
-#  policy = jsondecode({
-#  "Version": "2012-10-17",
-#  "Statement": [
-#    {
-#      "Effect": "Allow",
-#      "Action": "route53:GetChange",
-#      "Resource": "arn:aws:route53:::change/*"
-#    },
-#    {
-#      "Effect": "Allow",
-#      "Action": [
-#        "route53:ChangeResourceRecordSets",
-#        "route53:ListResourceRecordSets"
-#      ],
-#      "Resource": "arn:aws:route53:::hostedzone/*"
-#    },
-#    {
-#      "Effect": "Allow",
-#      "Action": "route53:ListHostedZonesByName",
-#      "Resource": "*"
-#    }
-#  ]
-#})
-#}
-#
+### END Cert Manager ###
 
 ### ECR ###
 
@@ -191,3 +148,5 @@ resource "aws_iam_user_policy" "ecr_user_policy" {
   policy = data.aws_iam_policy_document.ecr_user_policy_document.json
   user   = aws_iam_user.github_image_upload.name
 }
+
+### END ECR ###

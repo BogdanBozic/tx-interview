@@ -19,18 +19,3 @@ data "http" "self-ip" {
 }
 
 data "aws_caller_identity" "current" {}
-
-
-#data "aws_ami" "eks_worker" {
-#  filter {
-#    name   = "name"
-#    values = ["amazon-eks-node-*-latest-*"]
-#  }
-#
-#  filter {
-#    name   = "virtualization-type"
-#    values = ["hvm"]
-#  }
-#
-#  owners = ["amazon"]
-#}
