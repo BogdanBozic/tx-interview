@@ -38,36 +38,37 @@ jobs:
       - test
     steps:
 
-      - name: Build and push
-        uses: mr-smithers-excellent/docker-build-push@v6
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
         with:
-          image: ${{ secrets.ECR_NAME }}/${{
-          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.DEFAULT_AWS_REGION }}.amazonaws.com
+          aws-access-key-id: ${{ secrets.ECR_USER_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.ECR_USER_SECRET_KEY }}
+          aws-region: ${{ secrets.DEFAULT_AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ECR_USER_SECRET_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_USER_ACCESS_KEY }}
-
-      - name: Store tag into file
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          echo ${{ github.sha }} > tag.txt
-          cat tag.txt
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: tag.txt
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: my-artifact
-          path: distfiles
+          docker build -t ${{ secrets.ECR_NAME }}:${{ github.sha }} .
+          docker push ${{ secrets.ECR_NAME }}:${{ github.sha }}
 
       - name: Bump version
         run: |
-              apt-get update
-              apt-get install git yq -Y
+              wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+              chmod a+x /usr/local/bin/yq
+              yq --version
               mkdir infrastructure
               cd infrastructure
-              git clone https://$${ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}.git .
+              echo yay
+#              git clone https://${{ secrets.DEPLOYMENT_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}-infra.git .
 
 # TODO: once the infra repo is set up, add version bump code here

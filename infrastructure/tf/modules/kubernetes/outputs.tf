@@ -7,7 +7,7 @@ output "jump_server_ip" {
 }
 
 output "ecr_name" {
-  value = aws_ecr_repository.application_repo.name
+  value = aws_ecr_repository.application_repo.repository_url
 }
 
 output "ecr_user_access_key" {
