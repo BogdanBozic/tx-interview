@@ -58,3 +58,8 @@ resource "github_actions_secret" "project_name" {
   plaintext_value = var.project_name
 }
 
+resource "github_actions_secret" "app_name" {
+  repository      = github_repository.app_repo.name
+  secret_name     = "APP_NAME"
+  plaintext_value = var.app_name
+}

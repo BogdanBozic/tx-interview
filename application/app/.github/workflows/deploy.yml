@@ -68,7 +68,10 @@ jobs:
               yq --version
               mkdir infrastructure
               cd infrastructure
-              echo yay
-#              git clone https://${{ secrets.DEPLOYMENT_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.APPLICATION_NAME }}-infra.git .
-
-# TODO: once the infra repo is set up, add version bump code here
+              git config --global user.email "you@example.com"
+              git config --global user.name "GitHub Actions"
+              git clone https://${{ secrets.DEPLOYMENT_TOKEN }}@github.com/${{ secrets.LOGIN_GITHUB }}/${{ secrets.PROJECT_NAME }}-infra.git .
+              yq -i '.image.tag = "${{ github.sha }}"' ./charts/${{ secrets.APP_NAME }}/values.yaml
+              git add .
+              git commit -m "Bump ${{ secrets.APPLICATION_NAME }} version to ${{ github.sha }}"
+              git push
