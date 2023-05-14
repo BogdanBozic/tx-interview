@@ -1,16 +1,11 @@
-#variable "docker_hub_password" {
-#  type        = string
-#  description = "Docker Hub Password for application image upload."
-#}
-#
-#variable "docker_hub_username" {
-#  type        = string
-#  description = "Docker Hub Username for application image upload."
-#}
-
-variable "application_name" {
+variable "project_name" {
   type        = string
-  description = "Name the application, please."
+  description = "Name the project, please."
+}
+
+variable "app_name" {
+  type        = string
+  description = "Name your application, please."
 }
 
 variable "github_token" {
@@ -36,4 +31,9 @@ variable "default_aws_region" {
 variable "email" {
   type        = string
   description = "Personal email for use with Route 53 and cert-manager."
+}
+
+variable "domain" {
+  type        = string
+  description = "AWS Route 53 domain that you have previously bought manually. Example: example.com"
 }

@@ -87,7 +87,7 @@ resource "aws_iam_policy" "policy_for_cert_manager" {
           "route53:ChangeResourceRecordSets",
           "route53:ListResourceRecordSets"
         ],
-        "Resource" : "arn:aws:route53:::hostedzone/${data.aws_route53_zone.bastovansurcinski.id}"
+        "Resource" : "arn:aws:route53:::hostedzone/${data.aws_route53_zone.domain.id}"
       },
       {
         "Action" : "sts:AssumeRole",

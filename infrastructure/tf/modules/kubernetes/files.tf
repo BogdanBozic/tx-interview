@@ -8,7 +8,7 @@ resource "local_file" "cert_manager" {
   content  = local.cert_manager
 }
 
-resource "local_file" "ingress" {
-  filename = "${path.module}/k8s_resources/ingress.yaml"
-  content  = local.ingress
+resource "local_file" "values" {
+  filename = "${path.module}/k8s_resources/values.yaml"
+  content  = local.values
 }

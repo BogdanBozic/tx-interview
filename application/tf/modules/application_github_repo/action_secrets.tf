@@ -34,10 +34,10 @@ resource "github_actions_secret" "ecr_user_secret_key" {
   plaintext_value = var.ecr_user_secret_key
 }
 
-resource "github_actions_secret" "ecr_name" {
+resource "github_actions_secret" "ecr_url" {
   repository      = github_repository.app_repo.name
-  secret_name     = "ECR_NAME"
-  plaintext_value = var.ecr_name
+  secret_name     = "ECR_URL"
+  plaintext_value = var.ecr_url
 }
 
 resource "github_actions_secret" "github_repository_name" {

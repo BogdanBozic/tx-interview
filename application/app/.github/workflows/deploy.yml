@@ -58,8 +58,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t ${{ secrets.ECR_NAME }}:${{ github.sha }} .
-          docker push ${{ secrets.ECR_NAME }}:${{ github.sha }}
+          docker build -t ${{ secrets.ECR_URL }}:${{ github.sha }} .
+          docker push ${{ secrets.ECR_URL }}:${{ github.sha }}
 
       - name: Bump version
         run: |

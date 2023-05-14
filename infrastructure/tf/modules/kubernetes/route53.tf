@@ -1,16 +1,6 @@
-data "aws_route53_zone" "bastovansurcinski" {
-  name = "bastovansurcinski.click"
+data "aws_route53_zone" "domain" {
+  name = var.domain
 }
-
-#resource "aws_route53_record" "goldbach" {
-#  zone_id = data.aws_route53_zone.bastovansurcinski.id
-#  name    = "goldbach."
-#  type    = "CNAME"
-#  ttl     = "300"
-#  records = [
-#    "10.0.0.2",
-#  ]
-#}
 
 resource "aws_iam_policy" "cert_manager" {
   policy = jsonencode({
@@ -19,7 +9,7 @@ resource "aws_iam_policy" "cert_manager" {
       {
         "Effect" : "Allow",
         "Action" : "route53:GetChange",
-        "Resource" : "arn:aws:route53:::${data.aws_route53_zone.bastovansurcinski.id}/*"
+        "Resource" : "arn:aws:route53:::${data.aws_route53_zone.domain.id}/*"
       },
       {
         "Effect" : "Allow",

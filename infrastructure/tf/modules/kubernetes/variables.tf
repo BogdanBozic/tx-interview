@@ -19,13 +19,22 @@ variable "project_name" {
   description = "Name your project, please."
 }
 
-variable "cluster_name" {
-  default     = var.project_name
-  type        = string
-  description = "Name of the AWS EKS cluster to create. Default is goldbach."
+variable "app_name" {
+  type = string
+  description = "Application name."
 }
 
 variable "email" {
   description = "Email that will be used for cert-manager."
   type        = string
+}
+
+variable "github_token" {
+  type = string
+  description = "GitHub token that will be used to create the repo and upload files."
+}
+
+variable "domain" {
+  type = string
+  description = "AWS Route53 domain that you purchased manually."
 }

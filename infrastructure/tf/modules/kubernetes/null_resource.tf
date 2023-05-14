@@ -13,7 +13,7 @@ resource "null_resource" "install_dependencies" {
     inline = [
       "cd ~",
       "mkdir k8s_resources",
-      "mv ./*.yaml k8s_resources",
+      "mv ./cert_manager.yaml k8s_resources",
       "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl",
       "chmod +x ./kubectl",
       "mkdir ~/bin",
@@ -27,7 +27,7 @@ resource "null_resource" "install_dependencies" {
       "aws configure set default.region $AWS_DEFAULT_REGION",
       "aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID",
       "aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY",
-      "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.default_region}",
+      "aws eks update-kubeconfig --name ${var.project_name} --region ${var.default_region}",
       "sudo wget -qO ~/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64",
       "sudo chmod a+x ~/bin/yq",
       "sudo yum update",
@@ -45,13 +45,15 @@ resource "null_resource" "install_dependencies" {
       "export PATH=$PATH:/home/ec2-user/bin:/home/ec2-user/.local/bin",
       "pwd && echo $PATH",
       "ls",
-      "kubectl apply -f /home/ec2-user/k8s_resources/",
+#      "kubectl apply -f /home/ec2-user/k8s_resources/cert_manager.yaml",
+#      "mkdir infra_repo && cd infra_repo",
+#      "git clone https://${var.github_token}@github.com/${data.github_user.current.login}/${var.project_name}-infra.git .",
     ]
   }
 }
 
 resource "null_resource" "copy_files" {
-  depends_on = [aws_instance.jump_server, local_file.cert_manager, local_file.dns_record, local_file.ingress]
+  depends_on = [aws_instance.jump_server, local_file.cert_manager, local_file.dns_record, local_file.values]
 
   connection {
     type        = "ssh"
@@ -67,20 +69,9 @@ resource "null_resource" "copy_files" {
   }
 
   provisioner "file" {
-    source      = "infrastructure/tf/modules/kubernetes/k8s_resources/goldbach-app-deployment.yaml"
-    destination = "/home/ec2-user/goldbach-app-deployment.yaml"
+    source      = "infrastructure/tf/modules/kubernetes/k8s_resources/values.yaml"
+    destination = "/home/ec2-user/values.yaml"
   }
-
-  provisioner "file" {
-    source      = "infrastructure/tf/modules/kubernetes/k8s_resources/goldbach-app-service.yaml"
-    destination = "/home/ec2-user/goldbach-app-service.yaml"
-  }
-
-  provisioner "file" {
-    source      = "infrastructure/tf/modules/kubernetes/k8s_resources/ingress.yaml"
-    destination = "/home/ec2-user/ingress.yaml"
-  }
-
   provisioner "file" {
     source      = "infrastructure/tf/modules/kubernetes/k8s_resources/dns_record.json"
     destination = "/home/ec2-user/dns_record.json"
@@ -106,7 +97,36 @@ resource "null_resource" "update_route53_record" {
       "export PATH=$PATH:/home/ec2-user/bin:/home/ec2-user/.local/bin",
       "while [ -z \"$BALANCER\" ]; do BALANCER=$(kubectl get svc | grep LoadBalancer | awk '{print $4}'); sleep 5; done",
       "cat dns_record.json | jq \".Changes[].ResourceRecordSet.ResourceRecords[].Value=\\\"$BALANCER\\\"\" > updated.json && mv updated.json dns_record.json",
-      "aws route53 change-resource-record-sets --hosted-zone-id ${data.aws_route53_zone.bastovansurcinski.id} --change-batch \"$(cat ./dns_record.json)\""
+      "aws route53 change-resource-record-sets --hosted-zone-id ${data.aws_route53_zone.domain.id} --change-batch \"$(cat ./dns_record.json)\""
     ]
   }
+}
+
+resource "null_resource" "initialize_infra_repo" {
+  depends_on = [null_resource.update_route53_record, null_resource.install_dependencies, null_resource.copy_files]
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file("~/.ssh/id_ed25519")
+    host        = aws_instance.jump_server.public_ip
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir infra_repo && cd infra_repo",
+      "git clone https://${var.github_token}@github.com/${data.github_user.current.login}/${var.project_name}-infra.git .",
+      "mkdir charts && cd charts",
+      "helm create ${var.app_name}",
+      "cd ../",
+      "mv ~/values.yaml ~/infra_repo/charts/${var.app_name}/",
+      "pwd && ls",
+      "git status",
+      "git add .",
+      "git commit -m 'Add application chart'",
+      "git push"
+    ]
+  }
+
 }
