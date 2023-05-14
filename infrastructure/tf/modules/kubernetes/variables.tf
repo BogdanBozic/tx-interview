@@ -14,13 +14,13 @@ variable "default_region" {
   description = "Region for AWS. Default is us-east-1."
 }
 
-variable "application_name" {
+variable "project_name" {
   type        = string
-  description = "Name your application, please."
+  description = "Name your project, please."
 }
 
 variable "cluster_name" {
-  default     = "goldbach"
+  default     = var.project_name
   type        = string
   description = "Name of the AWS EKS cluster to create. Default is goldbach."
 }

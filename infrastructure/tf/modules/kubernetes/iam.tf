@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "worker_cert_manager" {
 ### ECR ###
 
 resource "aws_iam_user" "github_image_upload" {
-  name = "${var.application_name}_github_image_upload"
+  name = "${var.project_name}_github_image_upload"
 }
 
 resource "aws_iam_access_key" "ecr_user_access_key" {

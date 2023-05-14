@@ -3,7 +3,7 @@ variable "github_token" {
   type        = string
 }
 
-variable "application_name" {
+variable "project_name" {
   type        = string
   description = "Name your application, please."
 }

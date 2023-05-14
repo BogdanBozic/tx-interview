@@ -52,9 +52,9 @@ resource "github_actions_secret" "login_github" {
   plaintext_value = data.github_user.current.login
 }
 
-resource "github_actions_secret" "application_name" {
+resource "github_actions_secret" "project_name" {
   repository      = github_repository.app_repo.name
-  secret_name     = "APPLICATION_NAME"
-  plaintext_value = var.application_name
+  secret_name     = "PROJECT_NAME"
+  plaintext_value = var.project_name
 }
 
