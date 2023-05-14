@@ -6,7 +6,7 @@ output "jump_server_ip" {
   value = aws_instance.jump_server.public_ip
 }
 
-output "ecr_name" {
+output "ecr_url" {
   value = aws_ecr_repository.application_repo.repository_url
 }
 

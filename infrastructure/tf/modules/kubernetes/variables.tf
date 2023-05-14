@@ -14,18 +14,27 @@ variable "default_region" {
   description = "Region for AWS. Default is us-east-1."
 }
 
-variable "application_name" {
+variable "project_name" {
   type        = string
-  description = "Name your application, please."
+  description = "Name your project, please."
 }
 
-variable "cluster_name" {
-  default     = "goldbach"
-  type        = string
-  description = "Name of the AWS EKS cluster to create. Default is goldbach."
+variable "app_name" {
+  type = string
+  description = "Application name."
 }
 
 variable "email" {
   description = "Email that will be used for cert-manager."
   type        = string
+}
+
+variable "github_token" {
+  type = string
+  description = "GitHub token that will be used to create the repo and upload files."
+}
+
+variable "domain" {
+  type = string
+  description = "AWS Route53 domain that you purchased manually."
 }

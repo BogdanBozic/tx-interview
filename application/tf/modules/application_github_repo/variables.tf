@@ -3,12 +3,17 @@ variable "github_token" {
   type        = string
 }
 
-variable "application_name" {
+variable "project_name" {
   type        = string
+  description = "Name your project, please."
+}
+
+variable "app_name" {
+  type = string
   description = "Name your application, please."
 }
 
-variable "ecr_name" {
+variable "ecr_url" {
   type        = string
   description = "ECR name where the app image will be stored."
 }

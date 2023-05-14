@@ -7,6 +7,10 @@ output "aws_account" {
 }
 
 output "aws_secret" {
-  value = module.infrastructure.ecr_user_secret_key
+  value     = module.infrastructure.ecr_user_secret_key
   sensitive = true
+}
+
+output "infra_repo_url" {
+  value = module.infra_repo.infra_repo_url
 }

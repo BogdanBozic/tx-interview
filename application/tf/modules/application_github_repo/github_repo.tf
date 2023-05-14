@@ -1,5 +1,5 @@
 resource "github_repository" "app_repo" {
-  name        = "bogdan_goldbach_app_repo"
-  description = "The application repository of the GolBach Interview Assignment. This sentence is only waiting for ${var.wait_signal}, don't mind it."
+  name        = "${var.project_name}-${var.app_name}"
+  description = "The application repository of the ${var.project_name} project. This sentence is only waiting for ${var.wait_signal}, delete after initialization."
   visibility  = "public"
 }

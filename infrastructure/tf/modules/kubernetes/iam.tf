@@ -87,7 +87,7 @@ resource "aws_iam_policy" "policy_for_cert_manager" {
           "route53:ChangeResourceRecordSets",
           "route53:ListResourceRecordSets"
         ],
-        "Resource" : "arn:aws:route53:::hostedzone/${data.aws_route53_zone.bastovansurcinski.id}"
+        "Resource" : "arn:aws:route53:::hostedzone/${data.aws_route53_zone.domain.id}"
       },
       {
         "Action" : "sts:AssumeRole",
@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "worker_cert_manager" {
 ### ECR ###
 
 resource "aws_iam_user" "github_image_upload" {
-  name = "${var.application_name}_github_image_upload"
+  name = "${var.project_name}_github_image_upload"
 }
 
 resource "aws_iam_access_key" "ecr_user_access_key" {

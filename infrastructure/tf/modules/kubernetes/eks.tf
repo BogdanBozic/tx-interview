@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "goldbach" {
-  name     = var.cluster_name
+  name     = var.project_name
   role_arn = aws_iam_role.goldbach_master.arn
 
   vpc_config {

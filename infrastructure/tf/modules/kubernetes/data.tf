@@ -19,3 +19,7 @@ data "http" "self-ip" {
 }
 
 data "aws_caller_identity" "current" {}
+
+data "github_user" "current" {
+  username = ""
+}

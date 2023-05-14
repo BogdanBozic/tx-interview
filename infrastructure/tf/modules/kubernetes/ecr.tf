@@ -1,3 +1,4 @@
 resource "aws_ecr_repository" "application_repo" {
-  name = var.application_name
+  name = var.project_name
+  force_delete = true
 }

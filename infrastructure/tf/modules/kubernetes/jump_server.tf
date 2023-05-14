@@ -1,16 +1,13 @@
-# Define the key pair
 resource "aws_key_pair" "my_keypair" {
   key_name   = "my_keypair"
   public_key = file("~/.ssh/id_ed25519.pub")
 }
 
-# Define the IAM instance profile
 resource "aws_iam_instance_profile" "jump_server" {
   name = "jump_server"
   role = aws_iam_role.jump_server.name
 }
 
-# Define the EC2 instance
 resource "aws_instance" "jump_server" {
   ami                         = data.aws_ami.amazon_linux_2.id
   instance_type               = "t2.micro"
